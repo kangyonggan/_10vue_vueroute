@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title>第十篇 Vue集成Vue-Router</title>
+    <meta charset="UTF-8">
+    <style>
+        html {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            height: 100%;
+        }
+
+        #app {
+            height: 100%;
+        }
+
+        .navbar {
+            height: 60px;
+            line-height: 60px;
+            border-bottom: 1px solid #d5d5d5;
+            padding: 0 20px;
+        }
+
+        .navbar .logout {
+            float: right;
+        }
+
+        .sidebar {
+            width: 18%;
+            float: left;
+            border-right: 1px solid #d5d5d5;
+            min-height: 90%;
+        }
+
+        .sidebar ul li {
+        }
+
+        .main {
+            width: 80%;
+            float: left;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="navbar">
+        <router-link to="/">后台管理系统</router-link>
+        <a class="logout" href="#">退出</a>
+    </div>
+    <div class="sidebar">
+        <ul>
+            <li v-for="menu in menus">
+                {{menu.name}}
+                <ul v-if="menu.children && menu.children.length">
+                    <li v-for="m in menu.children">
+                        <router-link :to="m.url">{{m.name}}</router-link>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="main">
+        <!-- 路由匹配到的组件将渲染在这里 -->
+        <router-view></router-view>
+    </div>
+</div>
+
+<script src="vue.min.js"></script>
+<script src="vue-router.min.js"></script>
+<script type="text/javascript">
+    // 1. 定义 (路由) 组件。
+    const index = { template: '<div>首页</div>' };
+    const user = { template: '<div>用户管理</div>' };
+    const role = { template: '<div>角色管理</div>' };
+    const menu = { template: '<div>菜单管理</div>' };
+    const dict = { template: '<div>字典管理</div>' };
+    const article = { template: '<div>文章管理</div>' };
+
+    // 2. 定义路由
+    const routes = [
+        { path: '/', component: index },
+        { path: '/user', component: user },
+        { path: '/role', component: role },
+        { path: '/menu', component: menu },
+        { path: '/dict', component: dict },
+        { path: '/article', component: article }
+    ];
+
+    // 3. 创建 router 实例，然后传 `routes` 配置
+    const router = new VueRouter({
+        mode: 'history',
+        routes // (缩写) 相当于 routes: routes
+    });
+
+    // 4. 创建和挂载根实例。
+    new Vue({
+        el: '#app',
+        router,
+        data() {
+            return {
+                menus: [{
+                    name: '系统',
+                    children: [{
+                        name: '用户管理',
+                        url: 'user'
+                    }, {
+                        name: '角色管理',
+                        url: 'role'
+                    }, {
+                        name: '菜单管理',
+                        url: 'menu'
+                    }, {
+                        name: '字典管理',
+                        url: 'dict'
+                    }]
+                }, {
+                    name: '网站',
+                    children: [{
+                        name: '文章管理',
+                        url: 'article'
+                    }]
+                }]
+            }
+        }
+    });
+</script>
+</body>
+</html>
